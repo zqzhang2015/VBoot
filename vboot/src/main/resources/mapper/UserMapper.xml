@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.mrain22.vboot.mapper.UserMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cn.mrain22.vboot.entity.User">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="username" property="username" />
+        <result column="password" property="password" />
+        <result column="address" property="address" />
+        <result column="expired" property="expired" />
+        <result column="locked" property="locked" />
+        <result column="enabled" property="enabled" />
+        <result column="delete" property="delete" />
+        <result column="createbyid" property="createbyid" />
+        <result column="createdate" property="createdate" />
+        <result column="updatebyid" property="updatebyid" />
+        <result column="updatedate" property="updatedate" />
+    </resultMap>
+
+</mapper>

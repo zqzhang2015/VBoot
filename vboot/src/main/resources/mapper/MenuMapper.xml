@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.mrain22.vboot.mapper.MenuMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cn.mrain22.vboot.entity.Menu">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="path" property="path" jdbcType="VARCHAR"/>
+        <result column="component" property="component" javaType="java.lang.Object"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="iconCls" property="iconCls" jdbcType="VARCHAR"/>
+        <result column="keepAlive" property="keepAlive" jdbcType="BIT"/>
+        <result column="parentId" property="parentid" jdbcType="INTEGER"/>
+        <result column="ismenu" property="ismenu" jdbcType="INTEGER"/>
+        <result column="enabled" property="enabled" jdbcType="INTEGER"/>
+        <association property="meta" javaType="cn.mrain22.vboot.entity.MenuMeta">
+            <result column="keepAlive" property="keepAlive"/>
+            <result column="requireAuth" property="requireAuth"/>
+        </association>
+        <collection property="roles" ofType="cn.mrain22.vboot.entity.Role">
+            <id column="rid" property="id"/>
+            <result column="rname" property="name"/>
+            <result column="rnamezh" property="nameZh"/>
+        </collection>
+        <collection property="children" ofType="cn.mrain22.vboot.entity.Menu">
+            <id column="id2" property="id" jdbcType="INTEGER"/>
+            <result column="path2" property="path" jdbcType="VARCHAR"/>
+            <result column="component2" property="component" jdbcType="VARCHAR"/>
+            <result column="name2" property="name" jdbcType="VARCHAR"/>
+            <result column="iconCls2" property="iconCls" jdbcType="VARCHAR"/>
+            <result column="ismenu2" property="ismenu" jdbcType="INTEGER"/>
+            <result column="enabled2" property="enabled" jdbcType="INTEGER"/>
+            <association property="meta" javaType="cn.mrain22.vboot.entity.MenuMeta">
+                <result column="keepAlive2" property="keepAlive"/>
+                <result column="requireAuth2" property="requireAuth"/>
+            </association>
+            <collection property="children" ofType="cn.mrain22.vboot.entity.Menu">
+                <id column="id3" property="id"/>
+                <result column="name3" property="name" jdbcType="VARCHAR"/>
+            </collection>
+        </collection>
+    </resultMap>
+
+    <select id="findMenuByUserId" resultMap="BaseResultMap">
+                select
+                m1.id,
+                m1.path,
+                m1.component,
+                m1.iconCls,
+                m1.name,
+                m1.requireAuth,
+                m1.ismenu,
+                m1.enabled,
+                m2.component as component2,
+                m2.iconCls as iconCls2,
+                m2.keepAlive as keepAlive2,
+                m2.name as name2,
+                m2.path as path2,
+                m2.requireAuth as requireAuth2,
+                m2.ismenu as ismenu2,
+                m2.enabled as enabled2,
+                r.id as rid,
+                r.name as rname,
+                r.nameZh as rnamezh
+                from
+                vb_menu m1,
+                vb_menu m2,
+                vb_role r
+                where
+                m1.id=m2.parentId
+                and
+                m1.id!=0
+                and
+                m2.id
+                      in(
+                          select
+                           mr.mid
+                           from
+                           vb_user_role ur,
+                           vb_menu_role mr
+                           where
+                           ur.rid=mr.rid
+                           and
+                           ur.uid=#{id}
+                          )
+                and
+                m2.enabled=1
+                order by
+                m1.id,m2.id
+    </select>
+
+</mapper>
